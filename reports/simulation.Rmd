@@ -75,8 +75,17 @@ The mean and median of Distribution 3 are both close to 0 (-0.0062 and 0.020 res
 
 In the case of the composite distributions 1 and 2, why do the means and medians not align? That is because when we merge distributions with different means and standard deviations, we create a composite distribution that is no longer normally distributed. Indeed, in our case we created two distributions that are asymmetric, showing skewness (positive and negative). Usually, skewed distributions present a mean value that is moved towards the tail, with the median sticking to the peak of the distribution.
 
-**Which measure of central tendency will be more sensitive to outliers being added to data?** If we were to add outliers to our data, _the mean would be affected the most_. That is because the calculation of the mean is made by summing all the values in a dataset and then dividing by the number of values. Outliers are significantly lower or significantly higher than the rest of the data, hence, they can influence the mean value. On the other hand, the median is the middle value when a data set is ordered from lowest to highest. It divides the dataset into two equal halves. Therefore, it is less sensitive to outliers because it doesn't take into account the magnitude of each value, and the likelihood that adding a few outliers to the dataset will change its value is lower than in the case of the mean. It's only concerned with the order of the data.
+**Which measure of central tendency will be more sensitive to outliers being added to data?** If we were to add outliers to our data, _the mean would be affected the most_. That is because the calculation of the mean is made by summing all the values in a dataset and then dividing by the number of values. Outliers are values that are significantly lower or significantly higher than the rest of the data, hence, they can influence the mean value. On the other hand, the median is the middle value when a data set is ordered from lowest to highest. It divides the dataset into two equal halves. Therefore, it is less sensitive to outliers because it doesn't take into account the magnitude of each value. We can demonstrate the influence of outliers with the code below:
+```{r}
+# Adding an extreme value to Distribution 3 data:
+d_with_outlier <- c(d, 500)
 
-# 2.
+# Showing results before adding the outlier vs after adding the outlier:
+c(mean(d), median(d), mean(d_with_outlier), median(d_with_outlier))
+```
+
+As we can see, adding an outlier to Distribution 3 data contributed to increasing the mean from approximately zero to 0.6, while the median value remain almost unchanged.
+
+# 2. Standard Deviations
 
 # 3.

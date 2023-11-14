@@ -10,8 +10,11 @@ A few datasets are used in this project; each of them is created artificially al
 * Plot density graphs for the two distributions, marking the mean and median.
 * Discuss which measure of central tendency would be more affected by the addition of outliers to the data, mean or median?
 
-## 2. 
-
+## 2. Standard Deviations
+* Create rdata, plot its density, and mark mean and standard deviations.
+* Calculate and identify the quartiles and their relation to standard deviations.
+* Repeat with an adjusted dataset to see the effect of changing mean and standard deviation.
+* Compare the positioning of quartiles in the skewed distribution from Distribution 2.
 
 ## 3.
 
