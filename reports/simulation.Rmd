@@ -1,0 +1,82 @@
+---
+title: "Computational Statistics in Business Analytics - Statistical Simulations"
+author: "Daniele Melotti"
+date: "Nov 2023"
+output: pdf_document
+---
+
+# 1. Generate and Visualize Artificial Distributions
+
+Consider the composite distribution below - _Distribution 1_. It has been created by combining three normal distributions. When we visualize it, there are two important things to observe: first, the distribution is positively skewed (tail stretches to the right); second, the mean and the median are different.
+```{r}
+# Setting seed
+set.seed(123)
+
+# Creating three normally distributed data sets
+d1 <- rnorm(n=500, mean=15, sd=5)
+d2 <- rnorm(n=200, mean=30, sd=5)
+d3 <- rnorm(n=100, mean=45, sd=5)
+
+# Combining them into a composite dataset
+d123 <- c(d1, d2, d3)
+# Plotting the density function of d123
+plot(density(d123), col="cornflowerblue", lwd=2,
+main = "Distribution 1")
+
+# Adding vertical lines showing mean and median
+abline(v=mean(d123))
+abline(v=median(d123), lty="dashed")
+```
+
+Similarly, we create and visualize a new _Distribution 2_: a combined dataset (n=800) that is negatively skewed (tail stretches to the left). We change the mean and standard deviation of d1, d2, and d3 to achieve this new distribution. Additionally, we compute the mean and median, and draw lines showing the mean (thick line) and median (thin line).
+```{r}
+# Setting seed
+set.seed(456)
+
+# Three normally distributed data sets:
+d4 <- rnorm(n = 500, mean = 55, sd = 5)
+d5 <- rnorm(n = 200, mean = 45, sd = 10)
+d6 <- rnorm(n = 100, mean = 30, sd = 15)
+
+# Merging the three data sets together:
+d456 <- c(d4, d5, d6)
+
+# Computing the mean and median:
+mean(d456)
+median(d456)
+
+# Plotting the density function of d123:
+plot(density(d456), col= "darkorange", lwd = 2, main = "Distribution 2", )
+abline(v = mean(d456))
+abline(v = median(d456), lty = "dashed")
+```
+
+As we can see, the mean is 49.7009, while the median of Distribution 2 is 52.8891.
+
+Next, we proceed to create _Distribution 3_: a single dataset that is normally distributed (bell-shaped, symmetric). We can use the R function `rnorm()` to create a single large dataset (n=800). Similarly to Distribution 2, we compute the mean and median, and draw lines showing the mean (thick line) and median (thin line).
+```{r}
+# Setting seed
+set.seed(789)
+
+# Creating a normally distributed dataset d:
+d <- rnorm(n = 800)
+
+# Computing the mean and median:
+mean(d)
+median(d)
+
+# Plotting the density function of d:
+plot(density(d), col = "coral2", lwd = 2, main = "Distribution 3", )
+abline(v = mean(d))
+abline(v = median(d), lty = "dashed")
+```
+
+The mean and median of Distribution 3 are both close to 0 (-0.0062 and 0.020 respectively). That is because Distribution 3 is derived from the normal distribution, and in this type of distribution, mean and median are the same (mode as well). In fact, normal distributions are symmetrical, which means that the distribution of values on the left and on the right sides of the mean is the same. Consequently, the median aligns with the mean. Moreover, we have not modified the _mean_ parameter of `rnorm()`, resulting in the mean and median being both close to the default 0.
+
+In the case of the composite distributions 1 and 2, why do the means and medians not align? That is because when we merge distributions with different means and standard deviations, we create a composite distribution that is no longer normally distributed. Indeed, in our case we created two distributions that are asymmetric, showing skewness (positive and negative). Usually, skewed distributions present a mean value that is moved towards the tail, with the median sticking to the peak of the distribution.
+
+**Which measure of central tendency will be more sensitive to outliers being added to data?** If we were to add outliers to our data, _the mean would be affected the most_. That is because the calculation of the mean is made by summing all the values in a dataset and then dividing by the number of values. Outliers are significantly lower or significantly higher than the rest of the data, hence, they can influence the mean value. On the other hand, the median is the middle value when a data set is ordered from lowest to highest. It divides the dataset into two equal halves. Therefore, it is less sensitive to outliers because it doesn't take into account the magnitude of each value, and the likelihood that adding a few outliers to the dataset will change its value is lower than in the case of the mean. It's only concerned with the order of the data.
+
+# 2.
+
+# 3.
