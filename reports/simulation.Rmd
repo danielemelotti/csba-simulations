@@ -33,19 +33,19 @@ Similarly, we create and visualize a new _Distribution 2_: a combined dataset (n
 # Setting seed
 set.seed(456)
 
-# Three normally distributed data sets:
+# Three normally distributed data sets
 d4 <- rnorm(n = 500, mean = 55, sd = 5)
 d5 <- rnorm(n = 200, mean = 45, sd = 10)
 d6 <- rnorm(n = 100, mean = 30, sd = 15)
 
-# Merging the three data sets together:
+# Merging the three data sets together
 d456 <- c(d4, d5, d6)
 
-# Computing the mean and median:
+# Computing the mean and median
 mean(d456)
 median(d456)
 
-# Plotting the density function of d123:
+# Plotting the density function of d123
 plot(density(d456), col= "darkorange", lwd = 2, main = "Distribution 2", )
 abline(v = mean(d456))
 abline(v = median(d456), lty = "dashed")
@@ -58,14 +58,14 @@ Next, we proceed to create _Distribution 3_: a single dataset that is normally d
 # Setting seed
 set.seed(789)
 
-# Creating a normally distributed dataset d:
+# Creating a normally distributed dataset d
 d <- rnorm(n = 800)
 
-# Computing the mean and median:
+# Computing the mean and median
 mean(d)
 median(d)
 
-# Plotting the density function of d:
+# Plotting the density function of d
 plot(density(d), col = "coral2", lwd = 2, main = "Distribution 3", )
 abline(v = mean(d))
 abline(v = median(d), lty = "dashed")
@@ -87,5 +87,70 @@ c(mean(d), median(d), mean(d_with_outlier), median(d_with_outlier))
 As we can see, adding an outlier to Distribution 3 data contributed to increasing the mean from approximately zero to 0.6, while the median value remain almost unchanged.
 
 # 2. Standard Deviations
+
+Now, we will get more insights about what standard deviations are. At first, we create a random dataset (call it _rdata_) that is normally distributed with: n = 2000, mean = 0, sd = 1. Then we draw a density plot and put a solid vertical line on the mean, and dashed vertical lines at the 1st, 2nd, and 3rd standard deviations to the left and right of the mean.
+```{r}
+# Creating a random dataset
+set.seed(180)
+rdata <- rnorm(n = 2000, mean = 0, sd = 1)
+
+# Plotting the density function of rdata
+plot(density(rdata), col = "red", lwd = 2, main = "rdata density plot")
+# With the following vertical lines
+abline(v = mean(rdata), col = "blue" )
+abline(v = (mean(rdata) - (3 * sd(rdata))), lty = "dashed")
+abline(v = (mean(rdata) - (2 * sd(rdata))), lty = "dashed")
+abline(v = (mean(rdata) - sd(rdata)), lty = "dashed")
+abline(v = (mean(rdata) + sd(rdata)), lty = "dashed")
+abline(v = (mean(rdata) + (2 * sd(rdata))), lty = "dashed")
+abline(v = (mean(rdata) + (3 * sd(rdata))), lty = "dashed")
+```
+
+Adding standard deviation lines allows us to to see how much data is included within 1, 2 or 3 standard deviations. If a distribution is normal, then it should contain about 68% of the data within 1 standard deviation,
+95% of the data within 2 standard deviations and 99.7% percent of the data within 3 standard deviations.
+
+Now, using the `quantile()` function, we will find out which data points correspond to the 1st, 2nd, and 3rd quartiles (i.e., 25th, 50th, 75th percentiles) of rdata.
+```{r}
+quantile(rdata, 0.25)
+quantile(rdata, 0.5)
+quantile(rdata, 0.75)
+```
+
+Computing the quartiles informs us about what is the point below which we find 25%, 50% and 75% of the data. The 2nd quartile is the median. Next, we compute how many standard deviations away from the mean (divide by standard-deviation) are those points corresponding to the 1st, 2nd, and 3rd quartiles. This is an indicator of how spread is our data in relation to the mean.
+```{r}
+(quantile(rdata, 0.25) - mean(rdata)) / (sd(rdata))
+(quantile(rdata, 0.5) - mean(rdata)) / (sd(rdata))
+(quantile(rdata, 0.75) - mean(rdata)) / (sd(rdata))
+```
+
+The distances of the quartiles in terms of standard deviations from the mean are very close to the values of
+the quartiles themselves (indeed we are subtracting a mean of circa 0 and dividing by a standard deviation of
+circa 1). The distance of the 1st quartile from the mean is 0.693, the distance of the 2nd quartile is 0.0019
+and the distance of the 3rd quartile is 0.705.
+
+Next, we create a new random dataset that is normally distributed with: n = 2000, mean = 35, sd = 3.5. We take a peek at how many standard deviations away from the mean are those points corresponding to the 1st, 2nd and 3rd quartiles in this scenario.
+```{r}
+# Creating a new random dataset
+set.seed(190)
+rdata2 <- rnorm(n = 2000, mean = 35, sd = 3.5)
+
+# Computing the distance of 1st, 2nd and 3rd quartile from the mean in terms of sd
+(quantile(rdata2, 0.25) - mean(rdata2)) / (sd(rdata2))
+(quantile(rdata2, 0.5) - mean(rdata2)) / (sd(rdata2))
+(quantile(rdata2, 0.75) - mean(rdata2)) / (sd(rdata2))
+```
+
+The quartiles' distance from the mean in terms of standard deviations are quite similar to those of the quartiles computed from rdata, despite the two datasets present different mean and standard deviation. This is a consequence of the properties of normal distributions, indeed:
+* In normal distributions, the quartiles are always located at the same position in terms of standard deviations from the mean. This is due to the symmetric and consistent shape of the normal distribution curve.
+* The 1st quartile (25th percentile) is always approximately -0.675 standard deviations from the mean, the 2nd quartile (50th percentile or median) is 0 standard deviations from the mean (since in a normal distribution the median is the mean as well), and the 3rd quartile (75th percentile) is approximately +0.675 standard deviations from the mean.
+
+Now, recall Distribution 1 shown at the beginning of this project. **Does it look like a normal distribution?** Again, we will verify how many standard deviations away from the mean are those data points corresponding to the 1st and 3rd quartiles.
+```{r}
+(quantile(d123, 0.25) - mean(d123)) / (sd(d123))
+(quantile(d123, 0.5) - mean(d123)) / (sd(d123))
+(quantile(d123, 0.75) - mean(d123)) / (sd(d123))
+```
+
+In this scenario, we see that the distances have changed, especially the distance of the 2nd quartile from the mean. That is because Distribution 1 was created by merging three random datasets from a normal distribution, but that does not mean that Distribution 1 is normally distributed as well. We can notice it by taking a peek at its density plot, and confirm it when we check the distances above.
 
 # 3.
