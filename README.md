@@ -12,7 +12,7 @@ A few datasets are used in this project; each of them is created artificially al
 
 ## 2. Standard Deviations
 * Create rdata, plot its density, and mark mean and standard deviations.
-* Calculate and identify the quartiles and their relation to standard deviations.
+* Calculate and identify the quartiles and their distance to the mean in terms of standard deviations.
 * Repeat with an adjusted dataset to see the effect of changing mean and standard deviation.
 * Compare the positioning of quartiles in the skewed distribution from Distribution 2 and 3 with Distribution 1.
 

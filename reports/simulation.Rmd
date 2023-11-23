@@ -119,7 +119,7 @@ abline(v = (mean(rdata) + (3 * sd(rdata))), lty = "dashed")
 Adding standard deviation lines allows us to to see how much data is included within 1, 2 or 3 standard deviations. If a distribution is normal, then it should contain about 68% of the data within 1 standard deviation,
 95% of the data within 2 standard deviations and 99.7% percent of the data within 3 standard deviations.
 
-## Calculate and identify the quartiles and their relation to standard deviations
+## Calculate and identify the quartiles and their distance to the mean in terms of standard deviations
 
 Now, using the `quantile()` function, we will find out which data points correspond to the 1st, 2nd, and 3rd quartiles (i.e., 25th, 50th, 75th percentiles) of rdata.
 ```{r}
@@ -247,7 +247,7 @@ It seems that the higher the number of bins, the smallest their width. We can se
 
 ## Add outliers and repeat the analysis; discuss what method is least sensitive to outliers
 
-Now, let's verify which method is more or less sensitive to outliers in the data. We focus especially on changes in terms of bin width. We extend _rand_data_ with some outliers and recompute all the bin widths and number of bins with the three methods:
+Now, let's verify which method is more or less sensitive to outliers in the data. We focus especially on changes in terms of bin width. We are interested in this because the **bin width in a histogram can significantly impact how the underlying distribution of the data is perceived**. Analyzing changes in bin width is crucial as it helps understanding how robust are the bin width calculation methods against data anomalies, such as outliers. Hence, we extend _rand_data_ with some outliers and recompute all the bin widths and number of bins with the three methods:
 ```{r}
 # Adding the outlier data:
 set.seed(100)
@@ -284,3 +284,6 @@ As we can see, the method which shows the least change in _h_ is Freedman-Diacon
 
 # Summary
 
+In this comprehensive study, we delved into the realm of computational statistics with a particular emphasis on statistical distributions and histogram analysis. The project was structured in a few key sections.
+We began by creating and visualizing different types of distributions. This included a positively skewed composite distribution (Distribution 1), created by combining three normal distributions, a negatively skewed distribution (Distribution 2), and a normal distribution (Distribution 3). We realized that the measure of central tendency which would most be affected by the addition of outliers to the data is the mean. Then we simulated another dataset, computed quartiles as well as their distance from the mean in terms of standard deviations. We found that as long as the distribution is normal, the distance of quartiles from the mean will be similar between different distributions, even though they might have different means and standard deviations. However, when considering a composite distribution, such as Distribution 1, we found that this rule doesn't hold anymore.
+Further we conducted an analysis of different methods for computing histograms' bin width. We explored the Freedman-Diaconis' choice, Sturges' formula, and Scott's normal reference rule. The sensitivity of these methods to outliers was scrutinized, revealing insights into how data anomalies can affect visual representation and data interpretation. The method that is more resilient to outliers is Freedman-Diaconis' choice.
