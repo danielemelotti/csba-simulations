@@ -1,9 +1,10 @@
 ---
 title: "Computational Statistics in Business Analytics - Statistical Simulations"
-author: "Daniele Melotti"
-date: "Nov 2023"
-output: pdf_document
+output: github_document
 ---
+
+**Author:** Daniele Melotti<br>
+**Date:** Nov 2023
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -12,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # 1. Generate and Visualize Artificial Distributions
 
 Consider the composite distribution below - _Distribution 1_. It has been created by combining three normal distributions. When we visualize it, there are two important things to observe: first, the distribution is positively skewed (tail stretches to the right); second, the mean and the median are different.
-```{r}
+```{r d1, fig.align='center'}
 # Setting seed
 set.seed(123)
 
@@ -35,7 +36,7 @@ abline(v=median(d123), lty="dashed")
 ## Generate and visualize Distribution 2 (negatively skewed) and Distribution 3 (normal distribution).
 
 Similarly, we create and visualize a new _Distribution 2_: a combined dataset (n=800) that is negatively skewed (tail stretches to the left). We change the mean and standard deviation of d1, d2, and d3 to achieve this new distribution. Additionally, we compute the mean and median, and draw lines showing the mean (thick line) and median (dashed line).
-```{r}
+```{r d2, fig.align='center'}
 # Setting seed
 set.seed(456)
 
@@ -60,7 +61,7 @@ abline(v = median(d456), lty = "dashed")
 As we can see, the mean is 49.7009, while the median of Distribution 2 is 52.8891.
 
 Next, we proceed to create _Distribution 3_: a single dataset that is normally distributed (bell-shaped, symmetric). We can use the R function `rnorm()` to create a single large dataset (n = 800). Similarly to Distribution 2, we compute the mean and median, and draw lines showing the mean (thick line) and median (dashed line).
-```{r}
+```{r d3, fig.align='center'}
 # Setting seed
 set.seed(789)
 
@@ -99,7 +100,7 @@ As we can see, adding an outlier to Distribution 3 data contributed to increasin
 ## Create _rdata_, plot its density, and mark mean and standard deviations.
 
 Now, we will get more insights about what standard deviations are. At first, we create a random dataset (call it _rdata_) that is normally distributed with: n = 2000, mean = 0, sd = 1. Then we draw a density plot and put a solid vertical line on the mean, and dashed vertical lines at the 1st, 2nd, and 3rd standard deviations to the left and right of the mean.
-```{r}
+```{r rdata density, fig.align='center'}
 # Creating a random dataset
 set.seed(180)
 rdata <- rnorm(n = 2000, mean = 0, sd = 1)
@@ -277,7 +278,7 @@ hk_out_summary <- data.frame(
 
 # Summary
 knitr::kable(hk_out_summary,
-             caption = "Table 1: Summary of bin width and number of bins - Outlier Data")
+             caption = "Table 2: Summary of bin width and number of bins - Outlier Data")
 ```
 
 As we can see, the method which shows the least change in _h_ is Freedman-Diaconis' choice. Indeed, this method uses the IQR as opposed to Scott’s normal reference rule, which use standard deviation. If we look at the formula for the quartiles (necessary to calculate IQR), we see that the only parameter affecting their value is the number of observations. Standard deviation instead also takes into account the value of the observations. Therefore, a small number of extreme observations will cause greater change in the standard deviation than in the quartiles (and consequently in IQR). Freedman-Diaconis’ is more reliable than Sturge’s formula too, as after calculating _k_ using Sturge’s formula, we’ll have to find _h_ by considering the maximum and minimum datapoints in the given dataset, which they are likely going to be outliers.
