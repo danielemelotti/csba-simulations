@@ -3,6 +3,8 @@ Computational Statistics in Business Analytics - Statistical Simulations
 
 **Author:** Daniele Melotti<br> **Date:** Nov 2023
 
+*See README for list of tasks and project description.*
+
 # 1. Generate and Visualize Artificial Distributions
 
 Consider the composite distribution below - *Distribution 1*. It has
@@ -377,7 +379,7 @@ Sturges’ formula is the following:<br>
 
 <div align="center">
 
-![](https://latex.codecogs.com/svg.image?k=ceiling(log_2n)+1)
+![](https://latex.codecogs.com/gif.latex?k%3Dceiling%28log_2n%29+1)
 
 </div>
 

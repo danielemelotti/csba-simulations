@@ -199,7 +199,7 @@ rand_data <- rnorm(n, mean=20, sd = 5)
 Sturges' formula is the following:<br>
 
 <div align = 'center'>
-  ![](https://latex.codecogs.com/svg.image?k=ceiling(log_2n)+1)
+  ![](https://latex.codecogs.com/gif.latex?k%3Dceiling%28log_2n%29&plus;1)
 </div>
 
 <br>
