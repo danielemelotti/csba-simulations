@@ -1,0 +1,1376 @@
+Computational Statistics in Business Analytics - Statistical Simulations
+================
+
+**Author:** Daniele Melotti<br> **Date:** Nov 2023
+
+# 1. Generate and Visualize Artificial Distributions
+
+Consider the composite distribution below - *Distribution 1*. It has
+been created by combining three normal distributions. When we visualize
+it, there are two important things to observe: first, the distribution
+is positively skewed (tail stretches to the right); second, the mean and
+the median are different.
+
+``` r
+# Setting seed
+set.seed(123)
+
+# Creating three normally distributed data sets
+d1 <- rnorm(n=500, mean=15, sd=5)
+d2 <- rnorm(n=200, mean=30, sd=5)
+d3 <- rnorm(n=100, mean=45, sd=5)
+
+# Combining them into a composite dataset
+d123 <- c(d1, d2, d3)
+# Plotting the density function of d123
+plot(density(d123), col="cornflowerblue", lwd=2,
+main = "Distribution 1")
+
+# Adding vertical lines showing mean and median
+abline(v=mean(d123))
+abline(v=median(d123), lty="dashed")
+```
+
+<img src="simulation_files/figure-gfm/d1-1.png" style="display: block; margin: auto;" />
+
+## Generate and visualize Distribution 2 (negatively skewed) and Distribution 3 (normal distribution).
+
+Similarly, we create and visualize a new *Distribution 2*: a combined
+dataset (n=800) that is negatively skewed (tail stretches to the left).
+We change the mean and standard deviation of d1, d2, and d3 to achieve
+this new distribution. Additionally, we compute the mean and median, and
+draw lines showing the mean (thick line) and median (dashed line).
+
+``` r
+# Setting seed
+set.seed(456)
+
+# Three normally distributed data sets
+d4 <- rnorm(n = 500, mean = 55, sd = 5)
+d5 <- rnorm(n = 200, mean = 45, sd = 10)
+d6 <- rnorm(n = 100, mean = 30, sd = 15)
+
+# Merging the three data sets together
+d456 <- c(d4, d5, d6)
+
+# Computing the mean and median
+mean(d456)
+```
+
+    ## [1] 49.70087
+
+``` r
+median(d456)
+```
+
+    ## [1] 52.88905
+
+``` r
+# Plotting the density function of d123
+plot(density(d456), col= "darkorange", lwd = 2, main = "Distribution 2", )
+abline(v = mean(d456))
+abline(v = median(d456), lty = "dashed")
+```
+
+<img src="simulation_files/figure-gfm/d2-1.png" style="display: block; margin: auto;" />
+
+As we can see, the mean is 49.7009, while the median of Distribution 2
+is 52.8891.
+
+Next, we proceed to create *Distribution 3*: a single dataset that is
+normally distributed (bell-shaped, symmetric). We can use the R function
+`rnorm()` to create a single large dataset (n = 800). Similarly to
+Distribution 2, we compute the mean and median, and draw lines showing
+the mean (thick line) and median (dashed line).
+
+``` r
+# Setting seed
+set.seed(789)
+
+# Creating a normally distributed dataset d
+d <- rnorm(n = 800)
+
+# Computing the mean and median
+mean(d)
+```
+
+    ## [1] -0.006176743
+
+``` r
+median(d)
+```
+
+    ## [1] 0.02046861
+
+``` r
+# Plotting the density function of d
+plot(density(d), col = "coral2", lwd = 2, main = "Distribution 3", )
+abline(v = mean(d))
+abline(v = median(d), lty = "dashed")
+```
+
+<img src="simulation_files/figure-gfm/d3-1.png" style="display: block; margin: auto;" />
+
+The mean and median of Distribution 3 are both close to 0 (-0.0062 and
+0.020 respectively). That is because Distribution 3 is derived from the
+normal distribution, and in this type of distribution, mean and median
+are the same (mode as well). In fact, normal distributions are
+symmetrical, which means that the distribution of values on the left and
+on the right sides of the mean is the same. Consequently, the median
+aligns with the mean. Moreover, we have not modified the *mean*
+parameter of `rnorm()`, resulting in the mean and median being both
+close to the default 0.
+
+**In the case of the composite distributions 1 and 2, why do the means
+and medians not align?** That is because when we merge distributions
+with different means and standard deviations, we create a composite
+distribution that is no longer normally distributed. Indeed, in our case
+we created two distributions that are asymmetric, showing skewness
+(positive and negative). Usually, skewed distributions present a mean
+value that is moved towards the tail, with the median sticking to the
+peak of the distribution.
+
+## Which measure of central tendency will be more sensitive to outliers being added to data? Mean or Median?
+
+If we were to add outliers to our data, **the mean would be affected the
+most**. That is because the calculation of the mean is made by summing
+all the values in a dataset and then dividing by the number of values.
+Outliers are values that are significantly lower or significantly higher
+than the rest of the data, hence, they can influence the mean value. On
+the other hand, the median is the middle value when a data set is
+ordered from lowest to highest. It divides the dataset into two equal
+halves. Therefore, it is less sensitive to outliers because it doesn’t
+take into account the magnitude of each value. We can demonstrate the
+influence of outliers with the code below:
+
+``` r
+# Adding an extreme value to Distribution 3 data:
+d_with_outlier <- c(d, 500)
+
+# Showing results before adding the outlier vs after adding the outlier:
+c(mean(d), median(d), mean(d_with_outlier), median(d_with_outlier))
+```
+
+    ## [1] -0.006176743  0.020468613  0.618050693  0.023874958
+
+As we can see, adding an outlier to Distribution 3 data contributed to
+increasing the mean from approximately zero to 0.6, while the median
+value remain almost unchanged.
+
+# 2. Standard Deviations
+
+## Create *rdata*, plot its density, and mark mean and standard deviations.
+
+Now, we will get more insights about what standard deviations are. At
+first, we create a random dataset (call it *rdata*) that is normally
+distributed with: n = 2000, mean = 0, sd = 1. Then we draw a density
+plot and put a solid vertical line on the mean, and dashed vertical
+lines at the 1st, 2nd, and 3rd standard deviations to the left and right
+of the mean.
+
+``` r
+# Creating a random dataset
+set.seed(180)
+rdata <- rnorm(n = 2000, mean = 0, sd = 1)
+
+# Plotting the density function of rdata
+plot(density(rdata), col = "red", lwd = 2, main = "rdata density plot")
+# With the following vertical lines
+abline(v = mean(rdata), col = "blue" )
+abline(v = (mean(rdata) - (3 * sd(rdata))), lty = "dashed")
+abline(v = (mean(rdata) - (2 * sd(rdata))), lty = "dashed")
+abline(v = (mean(rdata) - sd(rdata)), lty = "dashed")
+abline(v = (mean(rdata) + sd(rdata)), lty = "dashed")
+abline(v = (mean(rdata) + (2 * sd(rdata))), lty = "dashed")
+abline(v = (mean(rdata) + (3 * sd(rdata))), lty = "dashed")
+```
+
+<img src="simulation_files/figure-gfm/rdata density-1.png" style="display: block; margin: auto;" />
+
+Adding standard deviation lines allows us to to see how much data is
+included within 1, 2 or 3 standard deviations. If a distribution is
+normal, then it should contain about 68% of the data within 1 standard
+deviation, 95% of the data within 2 standard deviations and 99.7%
+percent of the data within 3 standard deviations.
+
+## Calculate and identify the quartiles and their distance to the mean in terms of standard deviations
+
+Now, using the `quantile()` function, we will find out which data points
+correspond to the 1st, 2nd, and 3rd quartiles (i.e., 25th, 50th, 75th
+percentiles) of rdata.
+
+``` r
+quantile(rdata, 0.25)
+```
+
+    ##       25% 
+    ## -0.693956
+
+``` r
+quantile(rdata, 0.5)
+```
+
+    ##         50% 
+    ## -0.05575455
+
+``` r
+quantile(rdata, 0.75)
+```
+
+    ##       75% 
+    ## 0.6296026
+
+Computing the quartiles informs us about what is the data point below
+which we find 25%, 50% and 75% of the data. The 2nd quartile is the
+median. Next, we compute how many standard deviations away from the mean
+(divide by standard-deviation) are those points corresponding to the
+1st, 2nd, and 3rd quartiles. This is an indicator of how spread is our
+data in relation to the mean.
+
+``` r
+(quantile(rdata, 0.25) - mean(rdata)) / (sd(rdata))
+```
+
+    ##        25% 
+    ## -0.6930447
+
+``` r
+(quantile(rdata, 0.5) - mean(rdata)) / (sd(rdata))
+```
+
+    ##         50% 
+    ## -0.01890233
+
+``` r
+(quantile(rdata, 0.75) - mean(rdata)) / (sd(rdata))
+```
+
+    ##       75% 
+    ## 0.7050513
+
+The distances of the quartiles in terms of standard deviations from the
+mean are very close to the values of the quartiles themselves (indeed we
+are subtracting a mean of circa 0 and dividing by a standard deviation
+of circa 1). The distance of the 1st quartile from the mean is 0.693,
+the distance of the 2nd quartile is 0.0019 and the distance of the 3rd
+quartile is 0.705.
+
+## Repeat with an adjusted dataset to see the effect of changing mean and standard deviation
+
+Next, we create a new random dataset that is normally distributed with:
+n = 2000, mean = 35, sd = 3.5. We take a peek at how many standard
+deviations away from the mean are those points corresponding to the 1st,
+2nd and 3rd quartiles in this scenario.
+
+``` r
+# Creating a new random dataset
+set.seed(190)
+rdata2 <- rnorm(n = 2000, mean = 35, sd = 3.5)
+
+# Computing the distance of 1st, 2nd and 3rd quartile from the mean in terms of sd
+(quantile(rdata2, 0.25) - mean(rdata2)) / (sd(rdata2))
+```
+
+    ##        25% 
+    ## -0.6903467
+
+``` r
+(quantile(rdata2, 0.5) - mean(rdata2)) / (sd(rdata2))
+```
+
+    ##          50% 
+    ## -0.006950097
+
+``` r
+(quantile(rdata2, 0.75) - mean(rdata2)) / (sd(rdata2))
+```
+
+    ##       75% 
+    ## 0.6800506
+
+The quartiles’ distance from the mean in terms of standard deviations
+are quite similar to those of the quartiles computed from rdata, despite
+the two datasets present different mean and standard deviation. This is
+a consequence of the properties of normal distributions, indeed: \* In
+normal distributions, the quartiles are always located at the same
+position in terms of standard deviations from the mean. This is due to
+the symmetric and consistent shape of the normal distribution curve. \*
+The 1st quartile (25th percentile) is always approximately -0.675
+standard deviations from the mean, the 2nd quartile (50th percentile or
+median) is 0 standard deviations from the mean (since in a normal
+distribution the median is the mean as well), and the 3rd quartile (75th
+percentile) is approximately +0.675 standard deviations from the mean.
+
+## Verify positioning of quartiles in Distribution 1
+
+Now, recall Distribution 1 shown at the beginning of this project.
+**Does it look like a normal distribution?** Again, we will verify how
+many standard deviations away from the mean are those data points
+corresponding to the 1st and 3rd quartiles.
+
+``` r
+(quantile(d123, 0.25) - mean(d123)) / (sd(d123))
+```
+
+    ##        25% 
+    ## -0.7463353
+
+``` r
+(quantile(d123, 0.5) - mean(d123)) / (sd(d123))
+```
+
+    ##        50% 
+    ## -0.2909566
+
+``` r
+(quantile(d123, 0.75) - mean(d123)) / (sd(d123))
+```
+
+    ##       75% 
+    ## 0.5974905
+
+In this scenario, we see that the distances have changed, especially the
+distance of the 2nd quartile from the mean. That is because Distribution
+1 was created by merging three random datasets from a normal
+distribution, but that does not mean that Distribution 1 is normally
+distributed as well. We can notice it by taking a peek at its density
+plot, and confirm it when we check the distances above.
+
+# 3. Histogram Binning
+
+## Summarize different binning methods: Sturges’, Scott’s and Freedman-Diaconis
+
+When we choose to display histograms of data, we should be wary of the
+influence of the bin size of histograms. Specifically, there are
+different ways to calculate bin width *h* and number of bins *k*. Note
+that, for any dataset *d*, we can calculate the number of bins *k* from
+the bin width *h*: `k = ceiling((max(d) - min(d))/h)`; and the bin width
+from the number of bins: `h = (max(d) - min(d)) / k`.
+
+However, if we weren’t given *k* or *h* initially, we could use one of
+the several existing methods for calculating the ideal bin width and
+number of bins. Among the most popular lay: \* Sturges’ formula \*
+Scott’s normal reference rule \* Freedman-Diaconis’ choice
+
+**What rule is best?** According to [a thread on Cross Validated related
+to the ways of calculating the optimal number of
+bins](https://stats.stackexchange.com/questions/798/calculating-optimal-number-of-bins-in-a-histogram),
+it is suggested to use the Freedman-Diaconis’ rule. This formula uses
+the IQR instead of standard deviation, which according to [the Wikipedia
+histograms’ page](https://en.wikipedia.org/wiki/Histogram) is less
+sensitive to outliers in the data.
+
+## Apply the methods above to calculate bin widths and number of bins for a randomly distributed dataset
+
+We shall explore what the three methods suggest. We create a random
+normal distribution and compute *h* and *k* for each of the above
+methods. We will summarize the results at the end of the calculations.
+
+``` r
+# Creating a new random dataset\
+set.seed(100)
+n <- 800
+rand_data <- rnorm(n, mean=20, sd = 5)
+```
+
+Sturges’ formula is the following:<br>
+
+<div align="center">
+
+![](https://latex.codecogs.com/svg.image?k=ceiling(log_2n)+1)
+
+</div>
+
+<br>
+
+Hence, we can calculate the number of bins and then the bin width:
+
+``` r
+sturges_k <- ceiling(log2(n) + 1) # k
+sturges_h <- (max(rand_data) - min(rand_data))/sturges_k # h
+```
+
+Scott’s normal reference rule follows the following formula:<br>
+
+<div align="center">
+
+![](https://latex.codecogs.com/gif.latex?h%20%3D%20%5Cfrac%7B3.49%5Ccdot%5Chat%7B%5Csigma%7D%7D%7B%5Csqrt%5B3%5D%7Bn%7D%7D)
+
+</div>
+
+<br>
+
+We move on to compute *h* using the above formula, the we derive *k*:
+
+``` r
+scott_h <- (3.49 * sd(rand_data))/(n ^ (1/3)) # h
+scott_k <- ceiling((max(rand_data) - min(rand_data))/scott_h) # k
+```
+
+Finally, Freedman-Diaconis’ choice:<br>
+
+<div align="center">
+
+![](https://latex.codecogs.com/gif.latex?h%20%3D%202%5Ccdot%5Cfrac%7BIQR%28x%29%7D%7B%5Csqrt%5B3%5Dn%7D)
+
+</div>
+
+<br>
+
+Before computing the bin width, we need to calculate the interquartile
+range (IQR):
+
+``` r
+IQR <- quantile(rand_data, 0.75) - quantile(rand_data, 0.25)
+
+freedman_h <- unname(2 * (IQR / (n ^ (1/3)))) # h
+freedman_k <- unname(ceiling((max(rand_data) - min(rand_data))/freedman_h)) # k
+```
+
+Now that we computed *h* and *k* using each method, we can summarize the
+results:
+
+``` r
+require(gt) # loading gt package for knitting tables
+
+hk_summary <- data.frame(
+  Method = c("Sturges' formula", "Scott's normal reference rule",
+             "Freedman-Diaconis'"),
+  h = c(sturges_h, scott_h, freedman_h),
+  k = c(sturges_k, scott_k, freedman_k))
+
+# Summary
+gt::gt(hk_summary) %>%
+  tab_header(title = "Table 1: Summary of results.",
+             subtitle = "Bin width (h) and number of bins (k).") %>%
+  tab_style(style = list(cell_text(weight = "bold")),
+            locations = cells_column_labels())
+```
+
+<div id="neqjxlcugl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#neqjxlcugl table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+&#10;#neqjxlcugl thead, #neqjxlcugl tbody, #neqjxlcugl tfoot, #neqjxlcugl tr, #neqjxlcugl td, #neqjxlcugl th {
+  border-style: none;
+}
+&#10;#neqjxlcugl p {
+  margin: 0;
+  padding: 0;
+}
+&#10;#neqjxlcugl .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+&#10;#neqjxlcugl .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+&#10;#neqjxlcugl .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+&#10;#neqjxlcugl .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+&#10;#neqjxlcugl .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+&#10;#neqjxlcugl .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+&#10;#neqjxlcugl .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+&#10;#neqjxlcugl .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+&#10;#neqjxlcugl .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+&#10;#neqjxlcugl .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+&#10;#neqjxlcugl .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+&#10;#neqjxlcugl .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+&#10;#neqjxlcugl .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+&#10;#neqjxlcugl .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+&#10;#neqjxlcugl .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+&#10;#neqjxlcugl .gt_from_md > :first-child {
+  margin-top: 0;
+}
+&#10;#neqjxlcugl .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+&#10;#neqjxlcugl .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+&#10;#neqjxlcugl .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+&#10;#neqjxlcugl .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+&#10;#neqjxlcugl .gt_row_group_first td {
+  border-top-width: 2px;
+}
+&#10;#neqjxlcugl .gt_row_group_first th {
+  border-top-width: 2px;
+}
+&#10;#neqjxlcugl .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+&#10;#neqjxlcugl .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+&#10;#neqjxlcugl .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+&#10;#neqjxlcugl .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+&#10;#neqjxlcugl .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+&#10;#neqjxlcugl .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+&#10;#neqjxlcugl .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+&#10;#neqjxlcugl .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+&#10;#neqjxlcugl .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+&#10;#neqjxlcugl .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+&#10;#neqjxlcugl .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+&#10;#neqjxlcugl .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+&#10;#neqjxlcugl .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+&#10;#neqjxlcugl .gt_left {
+  text-align: left;
+}
+&#10;#neqjxlcugl .gt_center {
+  text-align: center;
+}
+&#10;#neqjxlcugl .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+&#10;#neqjxlcugl .gt_font_normal {
+  font-weight: normal;
+}
+&#10;#neqjxlcugl .gt_font_bold {
+  font-weight: bold;
+}
+&#10;#neqjxlcugl .gt_font_italic {
+  font-style: italic;
+}
+&#10;#neqjxlcugl .gt_super {
+  font-size: 65%;
+}
+&#10;#neqjxlcugl .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+&#10;#neqjxlcugl .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+&#10;#neqjxlcugl .gt_indent_1 {
+  text-indent: 5px;
+}
+&#10;#neqjxlcugl .gt_indent_2 {
+  text-indent: 10px;
+}
+&#10;#neqjxlcugl .gt_indent_3 {
+  text-indent: 15px;
+}
+&#10;#neqjxlcugl .gt_indent_4 {
+  text-indent: 20px;
+}
+&#10;#neqjxlcugl .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
+      <td colspan="3" class="gt_heading gt_title gt_font_normal" style>Table 1: Summary of results.</td>
+    </tr>
+    <tr class="gt_heading">
+      <td colspan="3" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style>Bin width (h) and number of bins (k).</td>
+    </tr>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="Method">Method</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="h">h</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="k">k</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="Method" class="gt_row gt_left">Sturges' formula</td>
+<td headers="h" class="gt_row gt_right">3.011333</td>
+<td headers="k" class="gt_row gt_right">11</td></tr>
+    <tr><td headers="Method" class="gt_row gt_left">Scott's normal reference rule</td>
+<td headers="h" class="gt_row gt_right">1.922323</td>
+<td headers="k" class="gt_row gt_right">18</td></tr>
+    <tr><td headers="Method" class="gt_row gt_left">Freedman-Diaconis'</td>
+<td headers="h" class="gt_row gt_right">1.396355</td>
+<td headers="k" class="gt_row gt_right">24</td></tr>
+  </tbody>
+  &#10;  
+</table>
+</div>
+
+It seems that the higher the number of bins, the smallest their width.
+We can see that the method which proposes the highest number of bins is
+Freedman-Diaconis’ choice, while Sturges’ proposes the least. In the
+middle, we find Scott’s normal reference rule.
+
+## Add outliers and repeat the analysis; discuss what method is least sensitive to outliers
+
+Now, let’s verify which method is more or less sensitive to outliers in
+the data. We focus especially on changes in terms of bin width. We are
+interested in this because the **bin width in a histogram can
+significantly impact how the underlying distribution of the data is
+perceived**. Analyzing changes in bin width is crucial as it helps
+understanding how robust are the bin width calculation methods against
+data anomalies, such as outliers. Hence, we extend *rand_data* with some
+outliers and recompute all the bin widths and number of bins with the
+three methods:
+
+``` r
+# Adding the outlier data:
+set.seed(100)
+out_data <- c(rand_data, runif(10, min=40, max=60))
+n2 <- n + 10
+
+# Sturge's formula:
+sturge_out_k <- ceiling(log2(n2) + 1) # k
+sturge_out_h <- (max(out_data) - min(out_data))/sturge_out_k #h
+
+# Scott's normal reference rule:
+scott_out_h <- (3.49 * sd(out_data))/(n2 ^ (1/3)) # h
+scott_out_k <- unname(ceiling((max(out_data) - min(out_data))/scott_out_h)) # k
+
+# Freedman-Diaconis' choice:
+IQR_out <- quantile(out_data, 0.75) - quantile(out_data, 0.25)
+freedman_out_h <- unname(2 * (IQR_out / (n2 ^ (1/3)))) # h
+freedman_out_k <- unname(ceiling((max(out_data) - min(out_data))/freedman_out_h)) # k
+```
+
+We can summarize the new results:
+
+``` r
+hk_out_summary <- data.frame(
+  Method = c("Sturges' formula", "Scott's normal reference rule", "Freedman-Diaconis'"),
+  h = c(sturge_out_h, scott_out_h, freedman_out_h),
+  k = c(sturge_out_k, scott_out_k, freedman_out_k))
+
+# Summary
+gt::gt(hk_out_summary) %>%
+  tab_header(title = "Table 2: Summary of results - Data with outliers.",
+             subtitle = "Bin width (h) and number of bins (k).") %>%
+  tab_style(style = list(cell_text(weight = "bold")),
+            locations = cells_column_labels())
+```
+
+<div id="vfdwfbggwk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#vfdwfbggwk table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+&#10;#vfdwfbggwk thead, #vfdwfbggwk tbody, #vfdwfbggwk tfoot, #vfdwfbggwk tr, #vfdwfbggwk td, #vfdwfbggwk th {
+  border-style: none;
+}
+&#10;#vfdwfbggwk p {
+  margin: 0;
+  padding: 0;
+}
+&#10;#vfdwfbggwk .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+&#10;#vfdwfbggwk .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+&#10;#vfdwfbggwk .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+&#10;#vfdwfbggwk .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+&#10;#vfdwfbggwk .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+&#10;#vfdwfbggwk .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+&#10;#vfdwfbggwk .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+&#10;#vfdwfbggwk .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+&#10;#vfdwfbggwk .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+&#10;#vfdwfbggwk .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+&#10;#vfdwfbggwk .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+&#10;#vfdwfbggwk .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+&#10;#vfdwfbggwk .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+&#10;#vfdwfbggwk .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+&#10;#vfdwfbggwk .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+&#10;#vfdwfbggwk .gt_from_md > :first-child {
+  margin-top: 0;
+}
+&#10;#vfdwfbggwk .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+&#10;#vfdwfbggwk .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+&#10;#vfdwfbggwk .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+&#10;#vfdwfbggwk .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+&#10;#vfdwfbggwk .gt_row_group_first td {
+  border-top-width: 2px;
+}
+&#10;#vfdwfbggwk .gt_row_group_first th {
+  border-top-width: 2px;
+}
+&#10;#vfdwfbggwk .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+&#10;#vfdwfbggwk .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+&#10;#vfdwfbggwk .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+&#10;#vfdwfbggwk .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+&#10;#vfdwfbggwk .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+&#10;#vfdwfbggwk .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+&#10;#vfdwfbggwk .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+&#10;#vfdwfbggwk .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+&#10;#vfdwfbggwk .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+&#10;#vfdwfbggwk .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+&#10;#vfdwfbggwk .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+&#10;#vfdwfbggwk .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+&#10;#vfdwfbggwk .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+&#10;#vfdwfbggwk .gt_left {
+  text-align: left;
+}
+&#10;#vfdwfbggwk .gt_center {
+  text-align: center;
+}
+&#10;#vfdwfbggwk .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+&#10;#vfdwfbggwk .gt_font_normal {
+  font-weight: normal;
+}
+&#10;#vfdwfbggwk .gt_font_bold {
+  font-weight: bold;
+}
+&#10;#vfdwfbggwk .gt_font_italic {
+  font-style: italic;
+}
+&#10;#vfdwfbggwk .gt_super {
+  font-size: 65%;
+}
+&#10;#vfdwfbggwk .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+&#10;#vfdwfbggwk .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+&#10;#vfdwfbggwk .gt_indent_1 {
+  text-indent: 5px;
+}
+&#10;#vfdwfbggwk .gt_indent_2 {
+  text-indent: 10px;
+}
+&#10;#vfdwfbggwk .gt_indent_3 {
+  text-indent: 15px;
+}
+&#10;#vfdwfbggwk .gt_indent_4 {
+  text-indent: 20px;
+}
+&#10;#vfdwfbggwk .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
+      <td colspan="3" class="gt_heading gt_title gt_font_normal" style>Table 2: Summary of results - Data with outliers.</td>
+    </tr>
+    <tr class="gt_heading">
+      <td colspan="3" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style>Bin width (h) and number of bins (k).</td>
+    </tr>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="Method">Method</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="h">h</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;" scope="col" id="k">k</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="Method" class="gt_row gt_left">Sturges' formula</td>
+<td headers="h" class="gt_row gt_right">4.804724</td>
+<td headers="k" class="gt_row gt_right">11</td></tr>
+    <tr><td headers="Method" class="gt_row gt_left">Scott's normal reference rule</td>
+<td headers="h" class="gt_row gt_right">2.234558</td>
+<td headers="k" class="gt_row gt_right">24</td></tr>
+    <tr><td headers="Method" class="gt_row gt_left">Freedman-Diaconis'</td>
+<td headers="h" class="gt_row gt_right">1.410308</td>
+<td headers="k" class="gt_row gt_right">38</td></tr>
+  </tbody>
+  &#10;  
+</table>
+</div>
+
+As we can see, the method which shows the least change in *h* is
+Freedman-Diaconis’ choice. Indeed, this method uses the IQR as opposed
+to Scott’s normal reference rule, which use standard deviation. If we
+look at the formula for the quartiles (necessary to calculate IQR), we
+see that the only parameter affecting their value is the number of
+observations. Standard deviation instead also takes into account the
+value of the observations. Therefore, a small number of extreme
+observations will cause greater change in the standard deviation than in
+the quartiles (and consequently in IQR). Freedman-Diaconis’ is more
+reliable than Sturge’s formula too, as after calculating *k* using
+Sturge’s formula, we’ll have to find *h* by considering the maximum and
+minimum datapoints in the given dataset, which they are likely going to
+be outliers.
+
+# Summary
+
+In this comprehensive study, we delved into the realm of computational
+statistics with a particular emphasis on statistical distributions and
+histogram analysis. The project was structured in a few key sections. We
+began by creating and visualizing different types of distributions. This
+included a positively skewed composite distribution (Distribution 1),
+created by combining three normal distributions, a negatively skewed
+distribution (Distribution 2), and a normal distribution (Distribution
+3). We realized that the measure of central tendency which would most be
+affected by the addition of outliers to the data is the mean. Then we
+simulated another dataset, computed quartiles as well as their distance
+from the mean in terms of standard deviations. We found that as long as
+the distribution is normal, the distance of quartiles from the mean will
+be similar between different distributions, even though they might have
+different means and standard deviations. However, when considering a
+composite distribution, such as Distribution 1, we found that this rule
+doesn’t hold anymore. Further we conducted an analysis of different
+methods for computing histograms’ bin width. We explored the
+Freedman-Diaconis’ choice, Sturges’ formula, and Scott’s normal
+reference rule. The sensitivity of these methods to outliers was
+scrutinized, revealing insights into how data anomalies can affect
+visual representation and data interpretation. The method that is more
+resilient to outliers is Freedman-Diaconis’ choice.

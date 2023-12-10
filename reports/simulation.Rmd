@@ -6,6 +6,8 @@ output: github_document
 **Author:** Daniele Melotti<br>
 **Date:** Nov 2023
 
+_See README for list of tasks and project description._
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -194,10 +196,13 @@ n <- 800
 rand_data <- rnorm(n, mean=20, sd = 5)
 ```
 
-Sturges' formula is the following:
-$$
-k = ceiling(log_2n) + 1
-$$
+Sturges' formula is the following:<br>
+
+<div align = 'center'>
+  ![](https://latex.codecogs.com/svg.image?k=ceiling(log_2n)+1)
+</div>
+
+<br>
 
 Hence, we can calculate the number of bins and then the bin width:
 ```{r}
@@ -205,10 +210,13 @@ sturges_k <- ceiling(log2(n) + 1) # k
 sturges_h <- (max(rand_data) - min(rand_data))/sturges_k # h
 ```
 
-Scott's normal reference rule follows the following formula:
-$$
-h = \frac{3.49\cdot\hat\sigma}{\sqrt[3]n}
-$$
+Scott's normal reference rule follows the following formula:<br>
+
+<div align = 'center'>
+  ![](https://latex.codecogs.com/gif.latex?h%20%3D%20%5Cfrac%7B3.49%5Ccdot%5Chat%7B%5Csigma%7D%7D%7B%5Csqrt%5B3%5D%7Bn%7D%7D)
+</div>
+
+<br>
 
 We move on to compute _h_ using the above formula, the we derive _k_:
 ```{r}
@@ -216,10 +224,13 @@ scott_h <- (3.49 * sd(rand_data))/(n ^ (1/3)) # h
 scott_k <- ceiling((max(rand_data) - min(rand_data))/scott_h) # k
 ```
 
-Finally, Freedman-Diaconis' choice:
-$$
-h = 2\cdot\frac{IQR(x)}{\sqrt[3]n}
-$$
+Finally, Freedman-Diaconis' choice:<br>
+
+<div align = 'center'>
+  ![](https://latex.codecogs.com/gif.latex?h%20%3D%202%5Ccdot%5Cfrac%7BIQR%28x%29%7D%7B%5Csqrt%5B3%5Dn%7D)
+</div>
+
+<br>
 
 Before computing the bin width, we need to calculate the interquartile range (IQR):
 ```{r}
@@ -230,18 +241,21 @@ freedman_k <- unname(ceiling((max(rand_data) - min(rand_data))/freedman_h)) # k
 ```
 
 Now that we computed _h_ and _k_ using each method, we can summarize the results:
-```{r, tidy=TRUE, tidy.opts = list(blank = FALSE, width.cutoff = 60)}
-require(knitr) # loading knitr package for knitting tables
+```{r, message=FALSE}
+require(gt) # loading gt package for knitting tables
 
 hk_summary <- data.frame(
-  Method = c("Sturges' formula", "Scott's normal reference rule", "Freedman-Diaconis'"),
+  Method = c("Sturges' formula", "Scott's normal reference rule",
+             "Freedman-Diaconis'"),
   h = c(sturges_h, scott_h, freedman_h),
   k = c(sturges_k, scott_k, freedman_k))
 
 # Summary
-knitr::kable(hk_summary,
-             caption = "Table 1: Summary of bin width and number of bins")
-
+gt::gt(hk_summary) %>%
+  tab_header(title = "Table 1: Summary of results.",
+             subtitle = "Bin width (h) and number of bins (k).") %>%
+  tab_style(style = list(cell_text(weight = "bold")),
+            locations = cells_column_labels())
 ```
 
 It seems that the higher the number of bins, the smallest their width. We can see that the method which proposes the highest number of bins is Freedman-Diaconis' choice, while Sturges' proposes the least. In the middle, we find Scott's normal reference rule.
@@ -270,15 +284,18 @@ freedman_out_k <- unname(ceiling((max(out_data) - min(out_data))/freedman_out_h)
 ```
 
 We can summarize the new results:
-```{r}
+```{r, align='center'}
 hk_out_summary <- data.frame(
   Method = c("Sturges' formula", "Scott's normal reference rule", "Freedman-Diaconis'"),
   h = c(sturge_out_h, scott_out_h, freedman_out_h),
   k = c(sturge_out_k, scott_out_k, freedman_out_k))
 
 # Summary
-knitr::kable(hk_out_summary,
-             caption = "Table 2: Summary of bin width and number of bins - Outlier Data")
+gt::gt(hk_out_summary) %>%
+  tab_header(title = "Table 2: Summary of results - Data with outliers.",
+             subtitle = "Bin width (h) and number of bins (k).") %>%
+  tab_style(style = list(cell_text(weight = "bold")),
+            locations = cells_column_labels())
 ```
 
 As we can see, the method which shows the least change in _h_ is Freedman-Diaconis' choice. Indeed, this method uses the IQR as opposed to Scott’s normal reference rule, which use standard deviation. If we look at the formula for the quartiles (necessary to calculate IQR), we see that the only parameter affecting their value is the number of observations. Standard deviation instead also takes into account the value of the observations. Therefore, a small number of extreme observations will cause greater change in the standard deviation than in the quartiles (and consequently in IQR). Freedman-Diaconis’ is more reliable than Sturge’s formula too, as after calculating _k_ using Sturge’s formula, we’ll have to find _h_ by considering the maximum and minimum datapoints in the given dataset, which they are likely going to be outliers.
