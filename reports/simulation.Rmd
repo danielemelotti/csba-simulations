@@ -6,7 +6,7 @@ output: github_document
 **Author:** Daniele Melotti<br>
 **Date:** Nov 2023
 
-_See the [related GitHub repository](https://github.com/danielemelotti/csba-simulations) for code, data and list of tasks_.
+_See README for list of tasks and project description_.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -241,8 +241,8 @@ freedman_k <- unname(ceiling((max(rand_data) - min(rand_data))/freedman_h)) # k
 ```
 
 Now that we computed _h_ and _k_ using each method, we can summarize the results:
-```{r}
-require(gt) # loading gt package for knitting tables
+```{r, message=FALSE, message = FALSE, warning = FALSE}
+require(knitr) # loading knitr package for knitting tables
 
 hk_summary <- data.frame(
   Method = c("Sturges' formula", "Scott's normal reference rule",
@@ -251,11 +251,8 @@ hk_summary <- data.frame(
   k = c(sturges_k, scott_k, freedman_k))
 
 # Summary
-gt::gt(hk_summary) %>%
-  tab_header(title = "Table 1: Summary of results.",
-             subtitle = "Bin width (h) and number of bins (k).") %>%
-  tab_style(style = list(cell_text(weight = "bold")),
-            locations = cells_column_labels())
+knitr::kable(hk_summary,
+             caption = "Table 1. Binning Methods - Summary of results.")
 ```
 
 It seems that the higher the number of bins, the smallest their width. We can see that the method which proposes the highest number of bins is Freedman-Diaconis' choice, while Sturges' proposes the least. In the middle, we find Scott's normal reference rule.
@@ -284,18 +281,16 @@ freedman_out_k <- unname(ceiling((max(out_data) - min(out_data))/freedman_out_h)
 ```
 
 We can summarize the new results:
-```{r}
+```{r, align='center', message = FALSE, warning = FALSE}
 hk_out_summary <- data.frame(
   Method = c("Sturges' formula", "Scott's normal reference rule", "Freedman-Diaconis'"),
   h = c(sturge_out_h, scott_out_h, freedman_out_h),
   k = c(sturge_out_k, scott_out_k, freedman_out_k))
 
 # Summary
-gt::gt(hk_out_summary) %>%
-  tab_header(title = "Table 2: Summary of results - Data with outliers.",
-             subtitle = "Bin width (h) and number of bins (k).") %>%
-  tab_style(style = list(cell_text(weight = "bold")),
-            locations = cells_column_labels())
+knitr::kable(hk_summary,
+             caption =
+               "Table 2. Binning Methods - Summary of results (Outlier Data).")
 ```
 
 As we can see, the method which shows the least change in _h_ is Freedman-Diaconis' choice. Indeed, this method uses the IQR as opposed to Scott’s normal reference rule, which use standard deviation. If we look at the formula for the quartiles (necessary to calculate IQR), we see that the only parameter affecting their value is the number of observations. Standard deviation instead also takes into account the value of the observations. Therefore, a small number of extreme observations will cause greater change in the standard deviation than in the quartiles (and consequently in IQR). Freedman-Diaconis’ is more reliable than Sturge’s formula too, as after calculating _k_ using Sturge’s formula, we’ll have to find _h_ by considering the maximum and minimum datapoints in the given dataset, which they are likely going to be outliers.
